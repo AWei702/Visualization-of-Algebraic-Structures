@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,42 +8,54 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-        }
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
             display: flex;
-            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
         }
-        .navbar button {
+        .sidebar {
+            width: 250px;
             background-color: #333;
             color: white;
-            padding: 14px 20px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
         }
-        .navbar button:hover {
-            background-color: #ddd;
-            color: black;
+        .sidebar button {
+            padding: 14px 20px;
+            text-align: left;
+            border: none;
+            background: none;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+        .sidebar button:hover {
+            background-color: #575757;
+        }
+        .main-content {
+            flex-grow: 1;
+            overflow: auto;
         }
         iframe {
             width: 100%;
-            height: calc(100vh - 48px);
+            height: 100%;
             border: none;
         }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <button onclick="loadGraph('cayley_graph_S4.html')">cayley graph of S4 based on generator set of adjacent transpositions</button>
-    <button onclick="loadGraph('cayley_graph_S4_based_on_D4.html')">cayley graph of S4 based on D4</button>
-    <button onclick="loadGraph('cayley_graph_S4_based_on_A4.html')">cayley graph of S4 based on A4</button>
+<div class="sidebar">
+    <button onclick="loadGraph('cayley_graph_S4.html')">Cayley Graph of S4 (adjacent transpositions)</button>
+    <button onclick="loadGraph('cayley_graph_S4_based_on_D4.html')">Cayley Graph of S4 (based on D4)</button>
+    <button onclick="loadGraph('cayley_graph_S4_based_on_A4.html')">Cayley Graph of S4 (based on A4)</button>
+    <!-- 在这里继续添加其他导航项 -->
 </div>
 
-<iframe id="graphFrame" src="cayley_graph_S4.html"></iframe>
+<div class="main-content">
+    <iframe id="graphFrame" src="cayley_graph_S4.html"></iframe>
+</div>
 
 <script>
     function loadGraph(src) {
