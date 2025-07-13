@@ -4,9 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Cayley Graphs of Symmetric Groups</title>
-    <link rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
+
+    <!-- Favicon (circular crop via canvas) -->
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const favicon = document.getElementById("dynamic-favicon");
+        const image = new Image();
+        image.src = favicon.href;
+        image.onload = () => {
+            const size = 64;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, size, size);
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
+            ctx.clip();
+            ctx.drawImage(image, 0, 0, size, size);
+            ctx.restore();
+            favicon.href = canvas.toDataURL('image/png');
+        };
+    });
+    </script>
+
+    <!-- MathJax configuration -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$','$$'], ['\\[','\\]']]
+        }
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
+        /* Reset & layout */
         html, body {
             margin: 0;
             padding: 0;
@@ -15,20 +51,18 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
+        /* Invisible hover trigger area */
         #hoverArea {
             position: fixed;
-            left: 0;
-            top: 0;
-            width: 20px;
-            height: 100%;
+            top: 0; left: 0;
+            width: 20px; height: 100%;
             z-index: 1000;
         }
+        /* Sidebar styling */
         .sidebar {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            height: 100%;
+            top: 0; left: 0;
+            width: 250px; height: 100%;
             background-color: #333;
             color: white;
             padding-top: 20px;
@@ -38,7 +72,7 @@
             transition: transform 0.3s ease;
             z-index: 999;
         }
-        /* Hover either the edge area or the sidebar itself */
+        /* Show when hovered */
         #hoverArea:hover + .sidebar,
         .sidebar:hover {
             transform: translateX(0);
@@ -56,15 +90,18 @@
         .sidebar button:hover {
             background-color: #575757;
         }
+        /* Main content area */
         .main-content {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             padding: 20px;
             box-sizing: border-box;
             overflow: auto;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
         }
         .description {
             margin-bottom: 15px;
@@ -76,14 +113,9 @@
             border: none;
             display: none;
         }
-        h2 {
-            color: #333;
-            margin-top: 0;
-        }
+        /* Responsive on mobile */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70%;
-            }
+            .sidebar { width: 70%; }
         }
     </style>
 </head>
@@ -92,56 +124,46 @@
 <div id="hoverArea" aria-hidden="true"></div>
 <div class="sidebar" id="sidebar">
     <button onclick="showIntroduction()">Introduction</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', '这里添加 S4 邻接换位子群的介绍。')">Cayley Graph of \(S_4\) (Adjacent Transpositions)</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', '这里添加 S4 普通换位子群的介绍。')">Cayley Graph of \(S_4\) (General Transpositions)</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', '这里添加基于 A4 的介绍。')">Cayley Graph of \(S_4\) (based on \(A_4\))</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', '这里添加基于 C4 的介绍。')">Cayley Graph of \(S_4\) (based on \(C_4\))</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', '这里添加基于 D4 的介绍。')">Cayley Graph of \(S_4\) (based on \(D_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', '<h3>Cayley Graph of $S_4$ (Adjacent Transpositions)</h3><p>这里添加 S4 邻接换位子群的介绍。</p>')">S4 (Adjacent)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', '<h3>Cayley Graph of $S_4$ (General Transpositions)</h3><p>这里添加 S4 普通换位子群的介绍。</p>')">S4 (General)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', '<h3>Cayley Graph of $S_4$ (based on $A_4$)</h3><p>这里添加基于 A4 的介绍。</p>')">S4 (A4)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', '<h3>Cayley Graph of $S_4$ (based on $C_4$)</h3><p>这里添加基于 C4 的介绍。</p>')">S4 (C4)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', '<h3>Cayley Graph of $S_4$ (based on $D_4$)</h3><p>这里添加基于 D4 的介绍。</p>')">S4 (D4)</button>
 </div>
 
 <div class="main-content">
-    <h2>Visualization of Algebraic Structures - Symmetric Groups</h2>
+    <h2>Visualization of Algebraic Structures − Symmetric Groups</h2>
     <div class="description" id="graphDescription">
-        <p>
-            Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
-            Each visualization explores different generator sets and subgroup structures.
-            Hover on the left edge or move your mouse over the sidebar area to reveal the menu.
-            Click an item to explore the corresponding Cayley graph.
-        </p>
-        <p>
-            We focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
-            Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.
-        </p>
+        <p>Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups. Each visualization explores different generator sets and subgroup structures. Hover on the left edge to reveal the menu.</p>
+        <p>We focus on the symmetric group $S_n$, the group of all permutations on $n$ elements. Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.</p>
     </div>
     <iframe id="graphFrame"></iframe>
 </div>
 
 <script>
+    function reRenderMath() {
+        if (window.MathJax) {
+            MathJax.typesetPromise([document.getElementById('graphDescription')]);
+        }
+    }
     function loadGraph(src, description) {
         const iframe = document.getElementById('graphFrame');
         iframe.src = src;
         iframe.style.display = 'block';
-        document.getElementById('graphDescription').innerHTML = description;
-        if (window.MathJax) MathJax.typesetPromise();
+        const descEl = document.getElementById('graphDescription');
+        descEl.innerHTML = description;
+        reRenderMath();
     }
-
     function showIntroduction() {
         const iframe = document.getElementById('graphFrame');
         iframe.style.display = 'none';
         iframe.src = '';
-        document.getElementById('graphDescription').innerHTML = `
-            <p>
-                Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
-                Each visualization explores different generator sets and subgroup structures.
-                Hover on the left edge or move your mouse over the sidebar area to reveal the menu.
-                Click an item to explore the corresponding Cayley graph.
-            </p>
-            <p>
-                We focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
-                Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.
-            </p>
+        const descEl = document.getElementById('graphDescription');
+        descEl.innerHTML = `
+            <p>Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups. Each visualization explores different generator sets and subgroup structures. Hover on the left edge to reveal the menu.</p>
+            <p>We focus on the symmetric group $S_n$, the group of all permutations on $n$ elements. Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.</p>
         `;
-        if (window.MathJax) MathJax.typesetPromise();
+        reRenderMath();
     }
 </script>
 
