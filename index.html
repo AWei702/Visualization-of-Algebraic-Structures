@@ -2,29 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Cayley Graphs of Symmetric Groups</title>
     <link rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        html, body {
             margin: 0;
             padding: 0;
-            display: flex;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
             overflow: hidden;
         }
+        #hoverArea {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            z-index: 1000;
+        }
         .sidebar {
-            width: 280px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100%;
             background-color: #333;
             color: white;
             padding-top: 20px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
-        }
-        .sidebar.hidden {
             transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+        /* Hover either the edge area or the sidebar itself */
+        #hoverArea:hover + .sidebar,
+        .sidebar:hover {
+            transform: translateX(0);
         }
         .sidebar button {
             padding: 14px 20px;
@@ -39,22 +56,14 @@
         .sidebar button:hover {
             background-color: #575757;
         }
-        .toggle-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 1000;
-        }
         .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             padding: 20px;
+            box-sizing: border-box;
             overflow: auto;
         }
         .description {
@@ -62,58 +71,58 @@
             font-size: 15px;
         }
         iframe {
-            flex-grow: 1;
             width: 100%;
+            height: calc(100% - 60px);
             border: none;
             display: none;
         }
         h2 {
             color: #333;
+            margin-top: 0;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70%;
+            }
         }
     </style>
 </head>
 <body>
 
-<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-
+<div id="hoverArea" aria-hidden="true"></div>
 <div class="sidebar" id="sidebar">
     <button onclick="showIntroduction()">Introduction</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', 'Cayley Graph of \\(S_4\\) (Adjacent Transpositions)')">Cayley Graph of \(S_4\) (Adjacent Transpositions)</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', 'Cayley Graph of \\(S_4\\) (General Transpositions)')">Cayley Graph of \(S_4\) (General Transpositions)</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', 'Cayley Graph of \\(S_4\\) (based on \\(A_4\\))')">Cayley Graph of \(S_4\) (based on \(A_4\))</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', 'Cayley Graph of \\(S_4\\) (based on \\(C_4\\))')">Cayley Graph of \(S_4\) (based on \(C_4\))</button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', 'Cayley Graph of \\(S_4\\) (based on \\(D_4\\))')">Cayley Graph of \(S_4\) (based on \(D_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', '这里添加 S4 邻接换位子群的介绍。')">Cayley Graph of \(S_4\) (Adjacent Transpositions)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', '这里添加 S4 普通换位子群的介绍。')">Cayley Graph of \(S_4\) (General Transpositions)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', '这里添加基于 A4 的介绍。')">Cayley Graph of \(S_4\) (based on \(A_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', '这里添加基于 C4 的介绍。')">Cayley Graph of \(S_4\) (based on \(C_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', '这里添加基于 D4 的介绍。')">Cayley Graph of \(S_4\) (based on \(D_4\))</button>
 </div>
 
 <div class="main-content">
     <h2>Visualization of Algebraic Structures - Symmetric Groups</h2>
     <div class="description" id="graphDescription">
         <p>
-        Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
-        Each visualization explores different generator sets and subgroup structures.
-        Click the items on the sidebar to explore various Cayley graphs and learn more about the algebraic structures behind them.
+            Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
+            Each visualization explores different generator sets and subgroup structures.
+            Hover on the left edge or move your mouse over the sidebar area to reveal the menu.
+            Click an item to explore the corresponding Cayley graph.
         </p>
         <p>
-        We mainly focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
-        Each Cayley graph represents the group structure visually, highlighting how different elements relate through group operations.
+            We focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
+            Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.
         </p>
     </div>
     <iframe id="graphFrame"></iframe>
 </div>
 
 <script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('hidden');
-    }
-
     function loadGraph(src, description) {
         const iframe = document.getElementById('graphFrame');
         iframe.src = src;
         iframe.style.display = 'block';
         document.getElementById('graphDescription').innerHTML = description;
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise();
-        }
+        if (window.MathJax) MathJax.typesetPromise();
     }
 
     function showIntroduction() {
@@ -121,19 +130,18 @@
         iframe.style.display = 'none';
         iframe.src = '';
         document.getElementById('graphDescription').innerHTML = `
-        <p>
-        Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
-        Each visualization explores different generator sets and subgroup structures.
-        Click the items on the sidebar to explore various Cayley graphs and learn more about the algebraic structures behind them.
-        </p>
-        <p>
-        We mainly focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
-        Each Cayley graph represents the group structure visually, highlighting how different elements relate through group operations.
-        </p>
+            <p>
+                Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
+                Each visualization explores different generator sets and subgroup structures.
+                Hover on the left edge or move your mouse over the sidebar area to reveal the menu.
+                Click an item to explore the corresponding Cayley graph.
+            </p>
+            <p>
+                We focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
+                Each Cayley graph visually represents the group structure, highlighting how elements relate under the chosen generators.
+            </p>
         `;
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise();
-        }
+        if (window.MathJax) MathJax.typesetPromise();
     }
 </script>
 
