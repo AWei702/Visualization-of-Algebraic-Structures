@@ -3,7 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Interactive Cayley Graphs of Symmetric Groups</title>
-    <link rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
+    <link id="dynamic-favicon" rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const favicon = document.getElementById("dynamic-favicon");
+    const image = new Image();
+    image.src = favicon.href;
+
+    image.onload = function() {
+        const canvas = document.createElement('canvas');
+        const size = 64;  // favicon标准尺寸
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // 绘制圆形
+        ctx.clearRect(0, 0, size, size);
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, false);
+        ctx.closePath();
+        ctx.clip();
+
+        // 绘制图片至圆形区域
+        ctx.drawImage(image, 0, 0, size, size);
+        ctx.restore();
+
+        // 替换 favicon
+        favicon.href = canvas.toDataURL('image/png');
+    };
+});
+</script>
+
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
