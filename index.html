@@ -3,38 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Interactive Cayley Graphs of Symmetric Groups</title>
-    <link id="dynamic-favicon" rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const favicon = document.getElementById("dynamic-favicon");
-    const image = new Image();
-    image.src = favicon.href;
-
-    image.onload = function() {
-        const canvas = document.createElement('canvas');
-        const size = 64;  // favicon标准尺寸
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-
-        // 绘制圆形
-        ctx.clearRect(0, 0, size, size);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, false);
-        ctx.closePath();
-        ctx.clip();
-
-        // 绘制图片至圆形区域
-        ctx.drawImage(image, 0, 0, size, size);
-        ctx.restore();
-
-        // 替换 favicon
-        favicon.href = canvas.toDataURL('image/png');
-    };
-});
-</script>
-
+    <link rel="icon" type="image/png" href="assets/cayley_table_(S5).png">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
@@ -91,21 +60,12 @@ document.addEventListener("DOMContentLoaded", function() {
 <body>
 
 <div class="sidebar">
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', 'Cayley Graph of \\(S_4\\) (Adjacent Transpositions)')">
-        Cayley Graph of \(S_4\) (Adjacent Transpositions)
-    </button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', 'Cayley Graph of \\(S_4\\) (General Transpositions)')">
-        Cayley Graph of \(S_4\) (General Transpositions)
-    </button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', 'Cayley Graph of \\(S_4\\) (Based on \\(A_4\\))')">
-        Cayley Graph of \(S_4\) (Based on \(A_4\))
-    </button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', 'Cayley Graph of \\(S_4\\) (Based on \\(C_4\\))')">
-        Cayley Graph of \(S_4\) (Based on \(C_4\))
-    </button>
-    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', 'Cayley Graph of \\(S_4\\) (Based on \\(D_4\\))')">
-        Cayley Graph of \(S_4\) (Based on \(D_4\))
-    </button>
+    <button onclick="showIntroduction()">Introduction</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', 'Cayley Graph of \\(S_4\\) (Adjacent Transpositions)')">Cayley Graph of \(S_4\) (Adjacent Transpositions)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', 'Cayley Graph of \\(S_4\\) (General Transpositions)')">Cayley Graph of \(S_4\) (General Transpositions)</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_A4.html', 'Cayley Graph of \\(S_4\\) (based on \\(A_4\\))')">Cayley Graph of \(S_4\) (based on \(A_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_C4.html', 'Cayley Graph of \\(S_4\\) (based on \\(C_4\\))')">Cayley Graph of \(S_4\) (based on \(C_4\))</button>
+    <button onclick="loadGraph('graphs/cayley_graph_S4_D4.html', 'Cayley Graph of \\(S_4\\) (based on \\(D_4\\))')">Cayley Graph of \(S_4\) (based on \(D_4\))</button>
 </div>
 
 <div class="main-content">
@@ -128,10 +88,30 @@ document.addEventListener("DOMContentLoaded", function() {
     function loadGraph(src, description) {
         const iframe = document.getElementById('graphFrame');
         iframe.src = src;
-        iframe.style.display = 'block';  // 显示iframe
+        iframe.style.display = 'block';
         document.getElementById('graphDescription').innerHTML = description;
         if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise(); // 重新渲染LaTeX
+            MathJax.typesetPromise();
+        }
+    }
+
+    function showIntroduction() {
+        const iframe = document.getElementById('graphFrame');
+        iframe.style.display = 'none';
+        iframe.src = '';
+        document.getElementById('graphDescription').innerHTML = `
+        <p>
+        Welcome! This project provides interactive visualizations of Cayley graphs of symmetric groups.
+        Each visualization explores different generator sets and subgroup structures.
+        Click the items on the sidebar to explore various Cayley graphs and learn more about the algebraic structures behind them.
+        </p>
+        <p>
+        We mainly focus on the symmetric group \(S_n\), the group of all permutations on \(n\) elements.
+        Each Cayley graph represents the group structure visually, highlighting how different elements relate through group operations.
+        </p>
+        `;
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise();
         }
     }
 </script>
