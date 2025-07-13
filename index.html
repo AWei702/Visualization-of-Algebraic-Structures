@@ -21,6 +21,10 @@
             padding-top: 20px;
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
         .sidebar button {
             padding: 14px 20px;
@@ -34,6 +38,17 @@
         }
         .sidebar button:hover {
             background-color: #575757;
+        }
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1000;
         }
         .main-content {
             flex-grow: 1;
@@ -50,7 +65,7 @@
             flex-grow: 1;
             width: 100%;
             border: none;
-            display: none; /* 默认隐藏iframe */
+            display: none;
         }
         h2 {
             color: #333;
@@ -59,7 +74,9 @@
 </head>
 <body>
 
-<div class="sidebar">
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+<div class="sidebar" id="sidebar">
     <button onclick="showIntroduction()">Introduction</button>
     <button onclick="loadGraph('graphs/cayley_graph_S4_gs_1.html', 'Cayley Graph of \\(S_4\\) (Adjacent Transpositions)')">Cayley Graph of \(S_4\) (Adjacent Transpositions)</button>
     <button onclick="loadGraph('graphs/cayley_graph_S4_gs_2.html', 'Cayley Graph of \\(S_4\\) (General Transpositions)')">Cayley Graph of \(S_4\) (General Transpositions)</button>
@@ -85,6 +102,10 @@
 </div>
 
 <script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('hidden');
+    }
+
     function loadGraph(src, description) {
         const iframe = document.getElementById('graphFrame');
         iframe.src = src;
